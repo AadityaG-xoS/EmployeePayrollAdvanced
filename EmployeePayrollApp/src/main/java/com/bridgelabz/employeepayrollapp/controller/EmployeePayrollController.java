@@ -1,39 +1,43 @@
 package com.bridgelabz.employeepayrollapp.controller;
 
+import com.bridgelabz.employeepayrollapp.dto.EmployeePayrollDTO;
+import com.bridgelabz.employeepayrollapp.model.EmployeePayrollData;
+import com.bridgelabz.employeepayrollapp.service.IEmployeePayrollService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/employeepayrollservice")
 public class EmployeePayrollController {
 
-    @GetMapping("/")
-    public String getWelcomeMessage() {
-        return "Welcome to Employee Payroll App!";
-    }
+    @Autowired
+    private IEmployeePayrollService employeePayrollService;
 
-    @GetMapping("/get")
-    public String getEmployeeData() {
-        return "Get Call Success";
+    @GetMapping("/")
+    public List<EmployeePayrollData> getAllEmployees() {
+        return employeePayrollService.getEmployeePayrollData();
     }
 
     @GetMapping("/get/{id}")
-    public String getEmployeeById(@PathVariable int id) {
-        return "Get Call Success for id: " + id;
+    public EmployeePayrollData getEmployeeById(@PathVariable int id) {
+        return employeePayrollService.getEmployeePayrollDataById(id);
     }
 
     @PostMapping("/create")
-    public String createEmployee(@RequestBody String employeeData) {
-        return "Post Call Success: " + employeeData;
+    public EmployeePayrollData createEmployee(@RequestBody EmployeePayrollDTO dto) {
+        return employeePayrollService.createEmployeePayrollData(dto);
     }
 
-    @PutMapping("/update")
-    public String updateEmployee(@RequestBody String employeeData) {
-        return "Put Call Success: " + employeeData;
+    @PutMapping("/update/{id}")
+    public EmployeePayrollData updateEmployee(@PathVariable int id, @RequestBody EmployeePayrollDTO dto) {
+        return employeePayrollService.updateEmployeePayrollData(id, dto);
     }
 
     @DeleteMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable int id) {
-        return "Delete Call Success for id: " + id;
+        employeePayrollService.deleteEmployeePayrollData(id);
+        return "Deleted employee with id: " + id;
     }
 }
