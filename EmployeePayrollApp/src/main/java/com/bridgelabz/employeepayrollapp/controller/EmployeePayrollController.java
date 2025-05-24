@@ -26,14 +26,15 @@ public class EmployeePayrollController {
     }
 
     @PostMapping("/create")
-    public EmployeePayrollData createEmployee(@RequestBody EmployeePayrollDTO dto) {
+    public EmployeePayrollData createEmployee(@Valid @RequestBody EmployeePayrollDTO dto) {
         return employeePayrollService.createEmployeePayrollData(dto);
     }
 
     @PutMapping("/update/{id}")
-    public EmployeePayrollData updateEmployee(@PathVariable int id, @RequestBody EmployeePayrollDTO dto) {
+    public EmployeePayrollData updateEmployee(@PathVariable int id, @Valid @RequestBody EmployeePayrollDTO dto) {
         return employeePayrollService.updateEmployeePayrollData(id, dto);
     }
+
 
     @DeleteMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable int id) {
