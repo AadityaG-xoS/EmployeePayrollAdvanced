@@ -19,16 +19,6 @@ public class EmployeePayrollService implements IEmployeePayrollService {
         log.info("Fetching all employee data");
         return employeeList;
     }
-
-    @Override
-    public EmployeePayrollData getEmployeePayrollDataById(int empId) {
-        log.info("Fetching employee data for ID: {}", empId);
-        return employeeList.stream()
-                .filter(emp -> emp.getId() == empId)
-                .findFirst()
-                .orElse(null);
-    }
-
     @Override
     public EmployeePayrollData createEmployeePayrollData(EmployeePayrollDTO employeePayrollDTO) {
         EmployeePayrollData newEmployee = new EmployeePayrollData(idCounter++, employeePayrollDTO.getName(), employeePayrollDTO.getSalary());
@@ -36,27 +26,26 @@ public class EmployeePayrollService implements IEmployeePayrollService {
         log.info("Created new employee: {}", newEmployee);
         return newEmployee;
     }
+    @Override
+    @Override
+    public EmployeePayrollData getEmployeePayrollDataById(int empId) {
+        return employeeList.stream()
+                .filter(emp -> emp.getId() == empId)
+                .findFirst()
+                .orElseThrow(() -> new EmployeePayrollException("Employee with ID " + empId + " not found"));
+    }
 
     @Override
     public EmployeePayrollData updateEmployeePayrollData(int empId, EmployeePayrollDTO employeePayrollDTO) {
         EmployeePayrollData emp = this.getEmployeePayrollDataById(empId);
-        if (emp != null) {
-            emp.setName(employeePayrollDTO.getName());
-            emp.setSalary(employeePayrollDTO.getSalary());
-            log.info("Updated employee with ID {}: {}", empId, emp);
-        } else {
-            log.warn("Employee ID {} not found for update", empId);
-        }
+        emp.setName(employeePayrollDTO.getName());
+        emp.setSalary(employeePayrollDTO.getSalary());
         return emp;
     }
 
     @Override
     public void deleteEmployeePayrollData(int empId) {
-        boolean removed = employeeList.removeIf(emp -> emp.getId() == empId);
-        if (removed) {
-            log.info("Deleted employee with ID {}", empId);
-        } else {
-            log.warn("Employee ID {} not found for delete", empId);
-        }
+        EmployeePayrollData emp = this.getEmployeePayrollDataById(empId); // will throw if not found
+        employeeList.remove(emp);
     }
 }
