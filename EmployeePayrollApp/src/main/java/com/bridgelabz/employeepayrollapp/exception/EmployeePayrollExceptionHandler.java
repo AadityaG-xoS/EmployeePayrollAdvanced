@@ -19,4 +19,9 @@ public class EmployeePayrollExceptionHandler {
             errorMap.put(error.getField(), error.getDefaultMessage()));
         return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
     }
+
+	@ExceptionHandler(EmployeePayrollException.class)
+	public ResponseEntity<String> handleEmployeeNotFound(EmployeePayrollException ex) {
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+	}
 }
